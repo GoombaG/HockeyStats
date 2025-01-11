@@ -34,19 +34,19 @@ function GamesTable({ row }: { row: Row<Team> }) {
                     {(!row || !row.original || !row.original.games) ? null : (
                     row.original.games.slice(-5).reverse().map((game) =>
                         <tr className='gamesRow'>
-                            <td>
+                            <td className='gamestd'>
                                 {game.gameDate}
                             </td>
-                            <td>
+                            <td className='gamestd'>
                                 {game.awayScore}
                             </td>
-                            <td>
+                            <td className='gamestd'>
                                 {game.awayAbbrev}
                             </td>
-                            <td>
+                            <td className='gamestd'>
                                 {game.homeAbbrev}
                             </td>
-                            <td>
+                            <td className='gamestd'>
                                 {game.homeScore}
                             </td>
                         </tr>

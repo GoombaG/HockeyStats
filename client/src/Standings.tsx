@@ -56,7 +56,7 @@ function Standings() {
                         <button
                           {...{
                             onClick: row.getToggleExpandedHandler(),
-                            style: { cursor: 'pointer' },
+                            style: { cursor: 'pointer', backgroundColor: 'transparent'},
                           }}
                         >
                           {row.getIsExpanded() ? '👇' : '👉'}
@@ -238,7 +238,9 @@ function Standings() {
         desc: boolean
     }
     type SortingState = ColumnSort[]
-    const [sorting, setSorting] = useState<SortingState>([])
+    const [sorting, setSorting] = useState<SortingState>([
+        {id: "standing", desc: false}
+    ])
 
     const standingsTable = useReactTable({
         data: standingsData, 
@@ -252,19 +254,11 @@ function Standings() {
         initialState: {
             columnVisibility: {
                 games: false,
-            }
+            },
         },
         state: {
-            sorting,
+            sorting
         },
-      /*  initialState: {
-            sorting: [
-                {
-                    id: 'points',
-                    desc: true, // sort by name in descending order by default
-                },
-            ],
-        }*/
     })
 
     return (
