@@ -1,0 +1,14 @@
+.gamesRow:nth-child(odd) {
+    background-color: #2e3b3b
+}
+
+.gamesRow:nth-child(even) {
+    background-color: #4a5f5f;
+}
+
+.gamesHeader1 {
+    background-color: #2e3b3b;
+}
+.gamesHeader2 {
+    background-color: #4a5f5f;
+}

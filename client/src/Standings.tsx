@@ -8,9 +8,9 @@ import {
     getExpandedRowModel,
     useReactTable, 
     flexRender,
-    Row,
 } from '@tanstack/react-table'
 import './Standings.css'
+import GamesTable from './GamesTable'
 
 export type Game = {
     awayAbbrev: string,
@@ -21,7 +21,7 @@ export type Game = {
     gameDate: string,
 }
 
-type Team = {
+export type Team = {
     gamesPlayed: number,
     standing: number
     losses: number
@@ -325,11 +325,7 @@ function Standings() {
                             ))}
                             </tr>
                             {row.getIsExpanded() && (
-                            <tr>
-                                <td colSpan={row.getVisibleCells().length}>
-                                    {renderSubComponent({row})}
-                                </td>
-                            </tr>
+                                <GamesTable row={row}/>
                             )}
                         </>
                     ))}
@@ -339,54 +335,5 @@ function Standings() {
         </>
     )
 }
-
-const renderSubComponent = ({ row }: { row: Row<Team> }) => {
-    //console.log(row.original.games)
-    return (
-        <table width={507}>
-            <thead>
-                <tr>
-                    <td colSpan={5}>
-                        Recent Games
-                    </td>
-                </tr>
-                <tr>
-                <th>
-                    Date
-                </th>
-                <th colSpan={2}>
-                    Home
-                </th>
-                <th colSpan={2}>
-                    Away
-                </th>
-                </tr>
-
-            </thead>
-            <tbody>
-            {(!row || !row.original || !row.original.games) ? null : (
-            row.original.games.map((game) =>
-                <tr>
-                    <td>
-                        {game.gameDate}
-                    </td>
-                    <td>
-                        {game.awayAbbrev}
-                    </td>
-                    <td>
-                        {game.awayScore}
-                    </td>
-                    <td>
-                        {game.homeScore}
-                    </td>
-                    <td>
-                        {game.homeAbbrev}
-                    </td>
-                </tr>
-            ))}
-            </tbody>
-        </table>
-    )
-  }
 
 export default Standings
