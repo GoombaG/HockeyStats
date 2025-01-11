@@ -10,7 +10,7 @@ function GamesTable({ row }: { row: Row<Team> }) {
         <tr>
 
             <td colSpan={row.getVisibleCells().length} className={"gamesTable"}>
-                <table width={507}>
+                <table width={518}>
                     <thead>
                         <tr>
                             <th colSpan={5} className='gamesHeader1'>
@@ -22,10 +22,10 @@ function GamesTable({ row }: { row: Row<Team> }) {
                             Date
                         </th>
                         <th colSpan={2} className='gamesHeader2'>
-                            Home
+                            Away
                         </th>
                         <th colSpan={2} className='gamesHeader2'>
-                            Away
+                            Home
                         </th>
                         </tr>
 
@@ -38,16 +38,16 @@ function GamesTable({ row }: { row: Row<Team> }) {
                                 {game.gameDate}
                             </td>
                             <td className='gamestd'>
-                                {game.awayScore}
-                            </td>
-                            <td className='gamestd'>
-                                {game.awayAbbrev}
-                            </td>
-                            <td className='gamestd'>
                                 {game.homeAbbrev}
                             </td>
                             <td className='gamestd'>
                                 {game.homeScore}
+                            </td>
+                            <td className='gamestd'>
+                                {game.awayScore}
+                            </td>
+                            <td className='gamestd'>
+                                {game.awayAbbrev}
                             </td>
                         </tr>
                     ))}
