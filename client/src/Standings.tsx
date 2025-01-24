@@ -300,8 +300,7 @@ function Standings() {
                                         header.getContext()
                                         )}
                                         {{
-                                        asc: ' ▴',
-                                        desc: ' ▾',
+
                                         }[header.column.getIsSorted() as string] ?? null}
                                     </div>
                                     )}

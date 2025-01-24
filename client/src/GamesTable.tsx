@@ -10,7 +10,7 @@ function GamesTable({ row }: { row: Row<Team> }) {
         <tr>
 
             <td colSpan={row.getVisibleCells().length} className={"gamesTable"}>
-                <table width={518}>
+                <table width={527}>
                     <thead>
                         <tr>
                             <th colSpan={5} className='gamesHeader1'>
