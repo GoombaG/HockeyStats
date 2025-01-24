@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo} from 'react'
 import axios, {AxiosResponse} from 'axios'
 import React from 'react'
 import { 
@@ -8,25 +8,26 @@ import {
     getExpandedRowModel,
     useReactTable, 
     flexRender,
+    Header
 } from '@tanstack/react-table'
 import './Standings.css'
 import GamesTable from './GamesTable'
 
 export type Game = {
-    awayAbbrev: string,
-    homeAbbrev: string,
-    awayLogo: string,
-    homeLogo: string,
-    awayLogoDark: string, // currently unused
-    homeLogoDark: string, // currently unused
-    awayScore: number,
-    homeScore: number,
-    lastPeriodType: string,
-    gameDate: string,
+    awayAbbrev: string
+    homeAbbrev: string
+    awayLogo: string
+    homeLogo: string
+    awayLogoDark: string // currently unused
+    homeLogoDark: string // currently unused
+    awayScore: number
+    homeScore: number
+    lastPeriodType: string
+    gameDate: string
 }
 
 export type Team = {
-    gamesPlayed: number,
+    gamesPlayed: number
     standing: number
     losses: number
     otLosses: number
@@ -35,11 +36,22 @@ export type Team = {
     teamAbbrev: string
     teamName: string
     wins: number
+    logo: string
     games?: Game[]
 }
 
 function canRowExpand() {
     return true
+}
+
+function getColspan(headerId: string): number {
+    console.log(headerId)
+    if (headerId == 'expander') {
+        return 2
+    } else if (headerId == 'teamName') {
+        return 0
+    }
+    return 1
 }
 
 function Standings() {   
@@ -48,13 +60,24 @@ function Standings() {
     const standingsColumnHelper = createColumnHelper<Team>()
     const standingsColumns = useMemo(() => [
         standingsColumnHelper.group({
-            id: 'Team',
+            id: 'Rank',
             header: '',
+            footer: '',
+            columns: [
+                standingsColumnHelper.accessor('standing', {
+                    header: () => <span>Rank</span>,
+                    cell: info => info.getValue(),
+                }),
+            ]
+        }),
+        standingsColumnHelper.group({
+            id: 'Team',
+            header: 'Team',
             footer: 'Test',
             columns: [
                 standingsColumnHelper.display({
                     id: 'expander',
-                    header: () => null,
+                    header: () => <span>Team</span>,
                     cell: ({ row }) => {
                       return row.getCanExpand() ? (
                         <button
@@ -63,23 +86,16 @@ function Standings() {
                             style: { cursor: 'pointer', backgroundColor: 'transparent'},
                           }}
                         >
-                          {row.getIsExpanded() ? '👇' : '👉'}
+                          {(<img src={row.original.logo} alt="Home Logo" width="35" height="35"></img>)}
                         </button>
                       ) : (
                         '🔵'
                       )
                     },
                 }),
-                standingsColumnHelper.accessor('standing', {
-                    header: () => <span>Rank</span>,
-                    cell: info => info.getValue(),
-                }),
-          /*      columnHelper.accessor('teamAbbrev', {
-                    header: '',
-                    cell: info => info.getValue(),
-                }),*/
                 standingsColumnHelper.accessor('teamName', {
-                    header: () => <span>Team</span>,
+                    id: 'teamName',
+                    //header: () => <span>Team</span>,
                     cell: info => info.getValue(),
                 })
             ]
@@ -161,6 +177,7 @@ function Standings() {
 
         for (const team in standings.data) {
             let teamGamesData: Game[] = []
+            let teamLogo: string = ""
             for (const game in games.data[team]) {
                 const newGame = {
                     awayAbbrev: games.data[team][game].awayAbbrev,
@@ -177,6 +194,16 @@ function Standings() {
                 teamGamesData.push(newGame)
             };
 
+            // relies on data for at least one game existing
+            // this game isn't listed with team data
+            if (teamGamesData.length > 0) {
+                if (teamGamesData[0].homeAbbrev == team) {
+                    teamLogo = teamGamesData[0].homeLogo
+                } else {
+                    teamLogo = teamGamesData[0].awayLogo
+                }
+            }
+
             const newTeam = {
                 gamesPlayed: standings.data[team].gamesPlayed,
                 losses: standings.data[team].losses,
@@ -187,6 +214,7 @@ function Standings() {
                 teamAbbrev: team,
                 teamName: standings.data[team].teamName,
                 wins: standings.data[team].wins,
+                logo: teamLogo,
                 games: teamGamesData
             }
             setStandingsData(oldStandingsData => [...oldStandingsData, newTeam])
@@ -247,36 +275,38 @@ function Standings() {
                         <tr key={headerGroup.id}>
                         {headerGroup.headers.map(header => {
                             return (
-                            <th key={header.id} colSpan={header.colSpan}>
-                                {header.isPlaceholder ? null : (
-                                <div
-                                    className={
-                                    header.column.getCanSort()
-                                        ? 'cursor-pointer select-none'
-                                        : ''
-                                    }
-                                    onClick={header.column.getToggleSortingHandler()}
-                                    title={
-                                    header.column.getCanSort()
-                                        ? header.column.getNextSortingOrder() === 'asc'
-                                        ? 'Sort ascending'
-                                        : header.column.getNextSortingOrder() === 'desc'
-                                            ? 'Sort descending'
-                                            : 'Clear sort'
-                                        : undefined
-                                    }
-                                >
-                                    {flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
+                                (getColspan(header.id) != 0) ?
+                                <th key={header.id} colSpan={getColspan(header.id)}>
+                                    {header.isPlaceholder ? null : (
+                                    <div
+                                        className={
+                                        header.column.getCanSort()
+                                            ? 'cursor-pointer select-none'
+                                            : ''
+                                        }
+                                        onClick={header.column.getToggleSortingHandler()}
+                                        title={
+                                        header.column.getCanSort()
+                                            ? header.column.getNextSortingOrder() === 'asc'
+                                            ? 'Sort ascending'
+                                            : header.column.getNextSortingOrder() === 'desc'
+                                                ? 'Sort descending'
+                                                : 'Clear sort'
+                                            : undefined
+                                        }
+                                    >
+                                        {flexRender(
+                                        header.column.columnDef.header,
+                                        header.getContext()
+                                        )}
+                                        {{
+                                        asc: ' ▴',
+                                        desc: ' ▾',
+                                        }[header.column.getIsSorted() as string] ?? null}
+                                    </div>
                                     )}
-                                    {{
-                                    asc: ' ▴',
-                                    desc: ' ▾',
-                                    }[header.column.getIsSorted() as string] ?? null}
-                                </div>
-                                )}
-                            </th>
+                                </th> 
+                                : null
                             )
                         })}
                         </tr>
