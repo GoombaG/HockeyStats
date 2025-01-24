@@ -38,7 +38,8 @@ function GamesTable({ row }: { row: Row<Team> }) {
                                 {game.gameDate}
                             </td>
                             <td className='gamestd'>
-                                {game.homeAbbrev}
+                                <img src={game.homeLogo} alt="Home Logo" width="35" height="35">
+                                </img>
                             </td>
                             <td className='gamestd'>
                                 {game.homeScore}
@@ -47,7 +48,8 @@ function GamesTable({ row }: { row: Row<Team> }) {
                                 {game.awayScore}
                             </td>
                             <td className='gamestd'>
-                                {game.awayAbbrev}
+                                <img src={game.awayLogo} alt="Away Logo" width="35" height="35">
+                                </img>
                             </td>
                         </tr>
                     ))}

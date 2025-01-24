@@ -15,6 +15,10 @@ import GamesTable from './GamesTable'
 export type Game = {
     awayAbbrev: string,
     homeAbbrev: string,
+    awayLogo: string,
+    homeLogo: string,
+    awayLogoDark: string, // currently unused
+    homeLogoDark: string, // currently unused
     awayScore: number,
     homeScore: number,
     lastPeriodType: string,
@@ -143,46 +147,13 @@ function Standings() {
 
     // END STANDINGS DATA
 
-    // GAMES DATA    
-    const [gamesData, setGamesData] = React.useState<Game[][]>([])
-    const gamesColumnsHelper = createColumnHelper<Game>()
-
-    const gamesColumns = useMemo(() => [
-        gamesColumnsHelper.group({
-            id: 'Stats',
-            header: '',
-            footer: '',
-            columns: [
-                gamesColumnsHelper.accessor('homeAbbrev', {
-                    header: () => <span></span>,
-                    cell: info => info.getValue(),
-                }),
-                gamesColumnsHelper.accessor('homeScore', {
-                    header: () => <span></span>,
-                    cell: info => info.getValue(),
-                }),
-                gamesColumnsHelper.accessor('lastPeriodType', {
-                    header: () => <span></span>,
-                    cell: info => info.getValue(),
-                }),
-                gamesColumnsHelper.accessor('awayScore', {
-                    header: () => <span></span>,
-                    cell: info => info.getValue(),
-                }),
-                gamesColumnsHelper.accessor('awayAbbrev', {
-                    header: () => <span></span>,
-                    cell: info => info.getValue(),
-                }),
-            ]
-        }),
-    ], [])
+    // START GAMES DATA
 
     const fetchGamesAPI = async () => {
         const response = await axios.get("http://localhost:8081/completedGames")
         return response
     }
-    console.log(standingsData)
-    
+
     // END GAMES DATA
 
     function SetStandingsValues(standings: AxiosResponse<any, any>, games: AxiosResponse<any, any>) {
@@ -194,6 +165,10 @@ function Standings() {
                 const newGame = {
                     awayAbbrev: games.data[team][game].awayAbbrev,
                     homeAbbrev: games.data[team][game].homeAbbrev,
+                    awayLogo: games.data[team][game].awayLogo,
+                    homeLogo: games.data[team][game].homeLogo,
+                    awayLogoDark: games.data[team][game].awayLogoDark,
+                    homeLogoDark: games.data[team][game].homeLogoDark,
                     awayScore: games.data[team][game].awayScore,
                     homeScore: games.data[team][game].homeScore,
                     lastPeriodType: games.data[team][game].lastPeriodType,

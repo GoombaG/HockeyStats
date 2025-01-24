@@ -59,6 +59,8 @@ def games():
                     "homeAbbrev": gameData["homeTeam"]["abbrev"],
                     "awayLogo": gameData["awayTeam"]["logo"],
                     "homeLogo": gameData["homeTeam"]["logo"],
+                    "awayLogoDark": gameData["awayTeam"]["darkLogo"],
+                    "homeLogoDark": gameData["homeTeam"]["darkLogo"],
                     "awayScore": gameData["awayTeam"]["score"],
                     "homeScore": gameData["homeTeam"]["score"],
                     "lastPeriodType": gameData["gameOutcome"]["lastPeriodType"],
