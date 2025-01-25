@@ -3,6 +3,7 @@ from flask_cors import CORS
 from NHLApiRequests.player import fetch_player_data
 from NHLApiRequests.standings import fetch_standings_data
 from NHLApiRequests.games import fetch_games_data
+from NHLApiRequests.roster import fetch_roster_data
 
 app = Flask(__name__)
 cors = CORS(app, origins='*') # TODO: change 'origins'
@@ -16,10 +17,14 @@ def streakPlayerData(playerData: dict):
     prunedPlayer = {
         "id": playerData["id"],
         "firstName": playerData["firstName"]["default"],
-        "lastName": playerData["lastName"]["defualt"],
+        "lastName": playerData["lastName"]["default"],
         "position": playerData["positionCode"],
         "country": playerData["birthCountry"],
+        "pointStreak": 1,
+        "assistStreak": 1,
+        "goalStreak": 1,
     }
+    return prunedPlayer
 
 
 @app.route("/streaks", methods=['GET'])
@@ -27,13 +32,21 @@ def streaks():
     standingsData = fetch_standings_data().json()
     players = {}
 
-    for teamData in fullStandingsData["standings"] :
+    standingsData = [standingsData["standings"][0]]
+    for teamData in standingsData:
         rosterData = fetch_roster_data(teamData["teamAbbrev"]["default"]).json()
-        for playerData in roster["forwards"]:
-            prunedPlayer = prunePlayer(playerData)
+        for playerData in rosterData["forwards"]:
+            prunedPlayer = streakPlayerData(playerData)
+            print(prunedPlayer)
+            players[prunedPlayer["id"]] = prunedPlayer
+        for playerData in rosterData["defensemen"]:
+            prunedPlayer = streakPlayerData(playerData)
+            players[prunedPlayer["id"]] = prunedPlayer
+        for playerData in rosterData["goalies"]:
+            prunedPlayer = streakPlayerData(playerData)
+            players[prunedPlayer["id"]] = prunedPlayer
 
-
-    return data
+    return players
 
 @app.route("/standings", methods=['GET'])
 def standings():

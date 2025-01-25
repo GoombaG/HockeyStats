@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo} from 'react'
+import { useState, useMemo} from 'react'
 import axios, {AxiosResponse} from 'axios'
 import React from 'react'
 import { 
@@ -130,29 +130,6 @@ function Standings() {
                 }),
             ]
         }), 
-        standingsColumnHelper.accessor('games', {
-            id: 'games',
-            header: () => <span>Test</span>,
-            cell: (info) => {
-                const games = info.getValue()
-                if (!games?.length) {
-                    // array and array.length are truthy
-                    // ⇒ probably OK to process array
-                    return null
-                }
-
-                return (
-                  <div>
-                    {games.map((game) => (
-                      <div className="px-2 py-1 bg-green-500 rounded-full text-white text-center my-2 text-sm">
-                        {game.awayAbbrev}
-                        {game.homeAbbrev}
-                      </div>
-                    ))}
-                  </div>
-                );
-            }
-        }),
     ], [])
 
     const fetchStandingsAPI = async () => {
