@@ -7,18 +7,33 @@ from NHLApiRequests.games import fetch_games_data
 app = Flask(__name__)
 cors = CORS(app, origins='*') # TODO: change 'origins'
 
-
 @app.route("/players/<int:playerId>", methods=['GET'])
 def player(playerId: int):
     playerData = fetch_player_data(playerId).json()
     return playerData
 
-"""
+def streakPlayerData(playerData: dict):
+    prunedPlayer = {
+        "id": playerData["id"],
+        "firstName": playerData["firstName"]["default"],
+        "lastName": playerData["lastName"]["defualt"],
+        "position": playerData["positionCode"],
+        "country": playerData["birthCountry"],
+    }
+
+
 @app.route("/streaks", methods=['GET'])
-def streaks(playerId: int):
-    data = fetch_streak_data().json()
+def streaks():
+    standingsData = fetch_standings_data().json()
+    players = {}
+
+    for teamData in fullStandingsData["standings"] :
+        rosterData = fetch_roster_data(teamData["teamAbbrev"]["default"]).json()
+        for playerData in roster["forwards"]:
+            prunedPlayer = prunePlayer(playerData)
+
+
     return data
-"""
 
 @app.route("/standings", methods=['GET'])
 def standings():
