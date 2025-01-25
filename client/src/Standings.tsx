@@ -8,7 +8,6 @@ import {
     getExpandedRowModel,
     useReactTable, 
     flexRender,
-    Header
 } from '@tanstack/react-table'
 import './Standings.css'
 import GamesTable from './GamesTable'
