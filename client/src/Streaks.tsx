@@ -1,7 +1,7 @@
 import React from 'react'
 import axios, {AxiosResponse} from 'axios'
-import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
-import { useMemo} from 'react'
+import { createColumnHelper, flexRender, getCoreRowModel, useReactTable, getSortedRowModel } from '@tanstack/react-table'
+import { useMemo, useState } from 'react'
 
 
 export type Player = {
@@ -11,16 +11,16 @@ export type Player = {
     fullName: string
     position: string
     country: string
-    goals: number
-    assists: number
-    points: number
+    goalStreakLength: number
+    assistStreakLength: number
+    pointStreakLength: number
     goalStreak: number
     assistStreak: number
     pointStreak: number
 }
 
 function Streaks() {
-    const [streaksData, setStreaksData] = React.useState<Player[]>([])
+    const [streaksData, setStreaksData] = useState<Player[]>([])
     const streaksColumnHelper = createColumnHelper<Player>()
     const streaksColumns = useMemo(() => [
         streaksColumnHelper.group({
@@ -58,20 +58,20 @@ function Streaks() {
         }),*/ 
         streaksColumnHelper.group({
             id: 'Streaks',
-            header: 'Active Streaks',
+            header: 'Active Streak Lengths',
             columns: [
-                streaksColumnHelper.accessor('goalStreak', {
-                    id: 'goalStreak',
+                streaksColumnHelper.accessor('goalStreakLength', {
+                    id: 'goalStreakLength',
                     header: () => <span>Goals</span>,
                     cell: info => info.getValue(),
                 }),
-                streaksColumnHelper.accessor('assistStreak', {
-                    id: 'assistStreak',
+                streaksColumnHelper.accessor('assistStreakLength', {
+                    id: 'assistStreakLength',
                     header: () => <span>Assists</span>,
                     cell: info => info.getValue(),
                 }),
-                streaksColumnHelper.accessor('pointStreak', {
-                    id: 'pointStreak',
+                streaksColumnHelper.accessor('pointStreakLength', {
+                    id: 'pointStreakLength',
                     header: () => <span>Points</span>,
                     cell: info => info.getValue(),
                 }),
@@ -100,6 +100,9 @@ function Streaks() {
                 goalStreak: streaks.data[player].goalStreak,
                 assistStreak: streaks.data[player].assistStreak,
                 pointStreak: streaks.data[player].pointStreak,
+                goalStreakLength: streaks.data[player].goalStreakLength,
+                assistStreakLength: streaks.data[player].assistStreakLength,
+                pointStreakLength: streaks.data[player].pointStreakLength,
             }
             setStreaksData(oldStreaksData => [...oldStreaksData, playerData])
         };
@@ -118,10 +121,23 @@ function Streaks() {
         fetchDetails();
         }, []);
 
+    type ColumnSort = {
+        id: string
+        desc: boolean
+    }
+    type SortingState = ColumnSort[]
+    const [sorting, setSorting] = useState<SortingState>([
+        {id: "pointStreakLength", desc: true}
+    ])
+
     const streaksTable = useReactTable({
         data: streaksData, 
         columns: streaksColumns, 
         getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        state: {
+            sorting
+        }
     })
       /*  getRowCanExpand: () => canRowExpand(),
         getCoreRowModel: getCoreRowModel(),
@@ -140,7 +156,7 @@ function Streaks() {
 
     return (
     <>
-        <h1>Standings</h1>
+        <h1>Streaks</h1>
         <div>
             <table>
                 <thead>
